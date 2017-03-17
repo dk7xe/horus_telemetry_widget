@@ -1,5 +1,7 @@
+
 -- ######################################################
--- ## Script by johfla with modifications by dk7xe.g   ##
+-- ## Script by dk7xe.g                                ##
+-- ## based on Script by johfla                        ##
 -- ## V 1.1, 2017/03/17                                ##
 -- ## Dynamic design via initial values and functions  ##
 -- ## Some of the Widgets based on work by Ollicious   ##
@@ -10,24 +12,24 @@
 local demoModeOn = 0				-- 1=ON, 0=OFF
 
 local transparency = 1				-- Hintergrund transparent
-local imagePath = "/WIDGETS/Telemetry/images/" 	-- Pfad zu den Bildern auf der SD-Card
+local imagePath = "/WIDGETS/Telemetry/images/"  -- Pfad zu den Bildern auf der SD-Card
 
 local col_std = BLACK			-- standard value color: `WHITE`,`GREY`,`LIGHTGREY`,`DARKGREY`,`BLACK`,`YELLOW`,`BLUE`,`RED`,`DARKRED`
 local col_min = BLUE				-- standard min value color
 local col_max = YELLOW				-- standard max value color
 local col_alm = RED					-- standard alarm value color
 
-local homeLat = 0     -- Längengrad der Home Position
+local homeLat = 0     -- LÃ¤ngengrad der Home Position
 local homeLon = 0	-- Breitengrad der Home Position  
 
--- Parameter für die Schriftgröße und Korrekturfaktoren der Werte und Einheiten
+-- Parameter fÃ¼r die SchriftgrÃ¶ÃŸe und Korrekturfaktoren der Werte und Einheiten
 local modeSize = {sml = SMLSIZE, mid = MIDSIZE, dbl = DBLSIZE}
 local modeAlign = {ri = RIGHT, le = LEFT}
 local yCorr = {sml = 16, mid = 8,  dbl = 0}
 local xCorr = {value = 0.75, value1 = 0.50, center = 7}
 
 local options = {
-	{ "Akku", VALUE, 1300, 800, 1800 }	-- Wert für die Kapazität des Akkus, für Widget fuel
+	{ "Akku", VALUE, 1300, 800, 1800 }	-- Wert fÃ¼r die KapazitÃ¤t des Akkus, fÃ¼r Widget fuel
 }
 
 function create(zone, options)
@@ -42,11 +44,11 @@ function update(thisZone, options)
 end
 
 -- #################### Definition der Widgets #################
--- Definition der angezeigten Telemetrie-Werte in Abhängigkeit des aktiven Modells
--- Der Modellname und die Telemetriewerte müssen auf die eigenen Bedürfnisse angepasst werden
+-- Definition der angezeigten Telemetrie-Werte in AbhÃ¤ngigkeit des aktiven Modells
+-- Der Modellname und die Telemetriewerte mÃ¼ssen auf die eigenen BedÃ¼rfnisse angepasst werden
 
 function widget()
-	local switchPos = getValue("sb")
+	local switchPos = getValue("sg")
 	modelName = model.getInfo().name
 	
 	if modelName == "Xugong" and switchPos <= 0 then
@@ -55,12 +57,12 @@ function widget()
 	elseif modelName == "Xugong" and switchPos > 0 then
 		-- Naza V2
 		widgetDefinition = {{"gps","battery1"},{"fm1","dist1","alt","speed"}, {"rssi1", "dist", "timer", "latlon"}}
-	elseif modelName == "RQR-HoneyBadger" or "RQR-Hive      1" then
+	elseif modelName == "RQR-HoneyBadger" or "RQR-Hive      1" or "RQR-Hive      2" then
 		-- Kiss FC
 		widgetDefinition = {{"battery"},{"vfas","curr","fuel"}, {"lost", "armed", "timer"}}
-	elseif modelName == "RQR-Hive      2" then
-		-- Kiss FC
-		widgetDefinition = {{"battery"},{"vfas","curr","fuel"}, {"lost", "armed", "timer"}}
+	elseif modelName == "TEST" or "Mini Ellipse" then
+		-- Unisens E
+		widgetDefinition = {{"fm","timer","rssi"}, {"alt", "vspeed", "rxbat"}}
 	else
 	--local widgetDefinition = {{"vfas","timer","curr","fuel"},{"fm1","alt","speed"}, {"timer","curr"}}
 
@@ -122,7 +124,7 @@ local function anyFuel()
 	armed = bit32.band(fuel, 1) == 1
 	homeSet = bit32.band(fuel, 2) == 2
 	
-	--Logischer Schalter für Timer Ein/Aus, LS64/INPUT30
+	--Logischer Schalter fÃ¼r Timer Ein/Aus, LS64/INPUT30
 	if armed then
 		model.setLogicalSwitch(63,myLS1) 
 	else 
@@ -141,8 +143,8 @@ local function vfasWidget(xCoord, yCoord, cellHeight, name)
 	local myMinVoltage = getValueOrDefault("VFAS-")
 			
 	if demoModeOn == 1 then
-      myVoltage = 16.8
-	  myMinVoltage = 13.8
+      myVoltage = 14.8
+	  myMinVoltage = 12.3
 	end
 	
 	xTxt1 = xCoord + cellWide * xCorr.value; yTxt1 = cellHeight + yCorr.dbl; yTxt2 = cellHeight + yCorr.sml
@@ -361,31 +363,10 @@ local function fmWidget(xCoord, yCoord, cellHeight, name)
 end
 
 ------------------------------------------------- 
--- LostCopter Sound ------------------------ lost --
-------------------------------------------------- 
-local function lostWidget(xCoord, yCoord, cellHeight, name)
-	local switchPos = getValueOrDefault("sd")
-	if switchPos <= 0 then
-		valTxt = "Beep off"
-		lcd.setColor(CUSTOM_COLOR, col_std)	
-	else
-		valTxt = "Beep on" 
-		lcd.setColor(CUSTOM_COLOR, col_alm)	
-	end
-
-		xTxt1 = xCoord + cellWide*0.5 - (xCorr.center * string.len(valTxt)); yTxt1 = cellHeight + yCorr.mid
-		lcd.setColor(CUSTOM_COLOR, col_std)
-		Size = modeSize.mid
-				
-	lcd.drawText(xCoord + 4, yCoord + 2, "LostSound [SD]", modeSize.sml) 
-	lcd.drawText(xTxt1, yTxt1, valTxt, Size  + CUSTOM_COLOR)
-end
-
-------------------------------------------------- 
 -- Armed/Disarmed (Switch) ------------- armed --
 ------------------------------------------------- 
 local function armedWidget(xCoord, yCoord, cellHeight, name)
-	local switchPos = getValueOrDefault("sg")
+	local switchPos = getValueOrDefault("sf")
 	if switchPos < 0 then
 		valTxt = "Disarmed"
 		lcd.setColor(CUSTOM_COLOR, col_std)	
@@ -403,6 +384,30 @@ local function armedWidget(xCoord, yCoord, cellHeight, name)
 	lcd.drawText(xCoord + 4, yCoord + 2, "Motor", modeSize.sml) 
 	lcd.drawText(xTxt1, yTxt1, valTxt, modeSize.mid  + CUSTOM_COLOR) 
 end
+
+------------------------------------------------- 
+-- Lost Copter sound (Switch) ----------- lost --
+------------------------------------------------- 
+local function lostWidget(xCoord, yCoord, cellHeight, name)
+	local switchPos = getValueOrDefault("sd")
+	if switchPos <= 0 then
+		valTxt = "Beep off"
+		lcd.setColor(CUSTOM_COLOR, col_std)	
+	else
+		valTxt = "Beep SOS" 
+		lcd.setColor(CUSTOM_COLOR, col_alm)	
+	end
+	
+	if demoModeOn == 1 then
+      valTxt = "Beep SOS"
+	end
+	
+	xTxt1 = xCoord + cellWide*0.5 - (xCorr.center * string.len(valTxt)); yTxt1 = cellHeight + yCorr.mid
+		
+	lcd.drawText(xCoord + 4, yCoord + 2, "LostSnd [SD]", modeSize.sml) 
+	lcd.drawText(xTxt1, yTxt1, valTxt, modeSize.mid  + CUSTOM_COLOR) 
+end
+
 
 ------------------------------------------------- 
 -- Distance-OpenTx ---------------------- dist --
@@ -841,7 +846,7 @@ local function buildGrid(def, thisZone)
 			tempCellHeight = tempCellHeight + math.floor(thisZone.zone.h / # def[i])
 		end
 		
-		-- Werte zurücksetzen
+		-- Werte zurÃ¼cksetzen
 		sumY = thisZone.zone.y
 		sumX = sumX + cellWide
 	end
