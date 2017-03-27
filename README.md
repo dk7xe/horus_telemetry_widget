@@ -7,7 +7,7 @@ To use it u need to copy the content of the WIDGET directory to the SD card fold
 To make it finally working with your adjusted settings OpenTX needs to be installed with the "luac" (LUA compile) option.
 ![](https://github.com/dk7xe/horus_telemetry_widget/blob/master/development/luac_option.JPG)
 
-Example for KISS FC
+Example widget definition for KISS FC
 
 widgetDefinition = {{"rssi1", "battery1"},{"vfas","curr","fuel"}, {"lost", "armed", "timer"}}
 defines the following widget:
