@@ -1,35 +1,37 @@
 
 -- ######################################################
 -- ## Script by dk7xe.g                                ##
--- ## V 1.2, 2017/03/23                                ## 
+-- ## V 1.4, 2017/03/27                                ## 
 -- ##                                                  ##
 -- ## based on Script by johfla                        ##
 -- ##                                                  ##
 -- ## Dynamic design via initial values and functions  ##
 -- ## Some of the Widgets based on work by Ollicious   ##
--- ##						       ##
+-- ##                                                  ##
 -- ######################################################
 
+-- Background transparency (1=true/0=false)
+local transparency = 1 
 
-local transparency = 1				-- Hintergrund transparent
-local imagePath = "/WIDGETS/Telemetry/images/"  -- Pfad zu den Bildern auf der SD-Card
+-- Path to pictures on SD-Card
+local imagePath = "/WIDGETS/Telemetry/images/"  
 
-local col_std = BLACK			-- standard value color: `WHITE`,`GREY`,`LIGHTGREY`,`DARKGREY`,`BLACK`,`YELLOW`,`BLUE`,`RED`,`DARKRED`
-local col_min = BLUE				-- standard min value color
-local col_max = YELLOW				-- standard max value color
-local col_alm = RED					-- standard alarm value color
+local col_std = BLACK	           -- standard value color: `WHITE`,`GREY`,`LIGHTGREY`,`DARKGREY`,`BLACK`,`YELLOW`,`BLUE`,`RED`,`DARKRED`
+local col_min = BLUE             -- standard min value color
+local col_max = YELLOW		-- standard max value color
+local col_alm = RED			-- standard alarm value color
 
-local homeLat = 0     -- L?ngengrad der Home Position
-local homeLon = 0	-- Breitengrad der Home Position  
+local homeLat = 0     -- Lat of Home position
+local homeLon = 0	-- Long of Home position  
 
--- Parameter f?r die Schriftgr??e und Korrekturfaktoren der Werte und Einheiten
+-- Parameter for Lettersize and correction factors of measures
 local modeSize = {sml = SMLSIZE, mid = MIDSIZE, dbl = DBLSIZE}
 local modeAlign = {ri = RIGHT, le = LEFT}
 local yCorr = {sml = 16, mid = 8,  dbl = 0}
 local xCorr = {value = 0.75, value1 = 0.50, center = 7}
 
 local options = {
-	{ "Akku", VALUE, 1300, 800, 1800 }	-- Wert f?r die Kapazit?t des Akkus, f?r Widget fuel
+	{ "Akku", VALUE, 1300, 800, 1800 }	-- Accu capacity, for fuel widget
 }
 
 function create(zone, options)
@@ -43,9 +45,10 @@ function update(thisZone, options)
   thisZone.options = options
 end
 
--- #################### Definition der Widgets #################
--- Definition der angezeigten Telemetrie-Werte in Abh?ngigkeit des aktiven Modells
--- Der Modellname und die Telemetriewerte m?ssen auf die eigenen Bed?rfnisse angepasst werden
+-- ################## Definition of Widgets #################
+-- Definition of shown telemetry values based on active model
+-- name. The model names and to be shown widgets need to be 
+-- adapted according own needs.
 
 function widget()
 	local switchPos = getValue("sg")
@@ -121,7 +124,7 @@ local function anyFuel()
 	armed = bit32.band(fuel, 1) == 1
 	homeSet = bit32.band(fuel, 2) == 2
 	
-	--Logischer Schalter f?r Timer Ein/Aus, LS64/INPUT30
+	--Logical switches for timer on/off, LS64/INPUT30
 	if armed then
 		model.setLogicalSwitch(63,myLS1) 
 	else 
@@ -130,7 +133,7 @@ local function anyFuel()
 end
 
 
--- ############################# Widgets #################################
+-- ###################### Widgets #########################
 
 ------------------------------------------------- 
 -- Voltage Lipo	------------------------- vfas --
@@ -273,7 +276,7 @@ local function timerWidget(xCoord, yCoord, cellHeight, name)
 end
 
 ------------------------------------------------- 
--- Alt ----------------------------- alt --
+-- Alt ----------------------------------- alt --
 -------------------------------------------------
 local function altWidget(xCoord, yCoord, cellHeight, name)
 	local myAlt = getValueOrDefault("Alt")
@@ -372,7 +375,7 @@ local function distWidget(xCoord,yCoord, cellHeight, name)
 end
 
 ------------------------------------------------- 
---- Distance calculated	---------------- dist1 --
+--- Distance calculated     ------------ dist1 --
 ------------------------------------------------- 
 local function distCalcWidget(xCoord, yCoord, cellHeight, name)
 	local myLatLon = getValueOrDefault("GPS")
@@ -419,9 +422,9 @@ local function distCalcWidget(xCoord, yCoord, cellHeight, name)
 	lcd.drawText(xTxt1, yTxt2, "m", modeSize.sml + modeAlign.le)
 end
 
----------------------------------- 
--- GPS Koordinaten        3/4 Widget --
-----------------------------------
+--------------------------------------- 
+-- GPS Koordinates        3/4 Widget --
+---------------------------------------
 local function LatLonWidget(xCoord,yCoord, cellHeight, name)
 
 	local LocationLat, LocationLon			-- GPS coord
@@ -543,7 +546,7 @@ local function batteryWidget(xCoord, yCoord, cellHeight, name)
 end
 
 ------------------------------------------------- 
--- GPS								 2 Spalten --
+-- GPS                               2 columns --
 ------------------------------------------------- 
 local function gpsWidget(xCoord, yCoord, cellHeight, name)
 	local modeFix = {[0]="Kein Fix", [2]="2D", [3]="3D", [4]="DGPS"}
@@ -672,7 +675,7 @@ local function rssiWidget(xCoord, yCoord, cellHeight, name)
 end
 
 
--- ############################# Call Widgets #################################
+-- ####################### Call Widgets #########################
  
 local function callWidget(name, xPos, yPos, y1Pos)
 	if (xPos ~= nil and yPos ~= nil) then
@@ -730,7 +733,7 @@ local function buildGrid(def, thisZone)
 	noCol = # def 	-- Anzahl Spalten berechnen
 	cellWide = (thisZone.zone.w / noCol) - 1
 				
-	-- Rechteck
+	-- Rectangle
 	if transparency  ~= 1 then 
 	  	lcd.setColor(CUSTOM_COLOR, WHITE)
 		lcd.drawFilledRectangle(thisZone.zone.x, thisZone.zone.y, thisZone.zone.w, thisZone.zone.h, CUSTOM_COLOR)
@@ -739,7 +742,7 @@ local function buildGrid(def, thisZone)
 		lcd.drawRectangle(thisZone.zone.x, thisZone.zone.y, thisZone.zone.w, thisZone.zone.h, 0, 2)
 	end
 	
-	-- Vertikale Linien
+	-- Vertical lines
 	if noCol == 2 then
 		lcd.drawLine(sumX + cellWide, sumY, sumX + cellWide, sumY + thisZone.zone.h - 1, SOLID, 0)
 	elseif noCol == 3 then
@@ -747,7 +750,7 @@ local function buildGrid(def, thisZone)
 		lcd.drawLine(sumX + cellWide*2, sumY, sumX + cellWide*2, sumY + thisZone.zone.h - 1, SOLID, 0)
 	end
 	
-	-- Horizontale Linien und Aufruf der einzelnen Widgets
+	-- Horizontal lines and calling single widgets
 	for i=1, noCol, 1
 	do
 	
@@ -765,7 +768,7 @@ local function buildGrid(def, thisZone)
 			tempCellHeight = tempCellHeight + math.floor(thisZone.zone.h / # def[i])
 		end
 		
-		-- Werte zur?cksetzen
+		-- reset values
 		sumY = thisZone.zone.y
 		sumX = sumX + cellWide
 	end
