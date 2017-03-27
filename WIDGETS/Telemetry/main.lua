@@ -7,7 +7,7 @@
 -- ##                                                  ##
 -- ## Dynamic design via initial values and functions  ##
 -- ## Some of the Widgets based on work by Ollicious   ##
--- ##							                 ##
+-- ##						       ##
 -- ######################################################
 
 
