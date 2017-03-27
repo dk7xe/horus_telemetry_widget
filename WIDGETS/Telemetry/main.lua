@@ -2,7 +2,7 @@
 -- ######################################################
 -- ## Script by dk7xe.g                                ##
 -- ## based on Script by johfla                        ##
--- ## V 1.1, 2017/03/17                                ##
+-- ## V 1.2, 2017/03/23                                ##
 -- ## Dynamic design via initial values and functions  ##
 -- ## Some of the Widgets based on work by Ollicious   ##
 -- ##							                 ##
@@ -19,17 +19,17 @@ local col_min = BLUE				-- standard min value color
 local col_max = YELLOW				-- standard max value color
 local col_alm = RED					-- standard alarm value color
 
-local homeLat = 0     -- Längengrad der Home Position
+local homeLat = 0     -- L?ngengrad der Home Position
 local homeLon = 0	-- Breitengrad der Home Position  
 
--- Parameter für die Schriftgröße und Korrekturfaktoren der Werte und Einheiten
+-- Parameter f?r die Schriftgr??e und Korrekturfaktoren der Werte und Einheiten
 local modeSize = {sml = SMLSIZE, mid = MIDSIZE, dbl = DBLSIZE}
 local modeAlign = {ri = RIGHT, le = LEFT}
 local yCorr = {sml = 16, mid = 8,  dbl = 0}
 local xCorr = {value = 0.75, value1 = 0.50, center = 7}
 
 local options = {
-	{ "Akku", VALUE, 1300, 800, 1800 }	-- Wert für die Kapazität des Akkus, für Widget fuel
+	{ "Akku", VALUE, 1300, 800, 1800 }	-- Wert f?r die Kapazit?t des Akkus, f?r Widget fuel
 }
 
 function create(zone, options)
@@ -44,8 +44,8 @@ function update(thisZone, options)
 end
 
 -- #################### Definition der Widgets #################
--- Definition der angezeigten Telemetrie-Werte in Abhängigkeit des aktiven Modells
--- Der Modellname und die Telemetriewerte müssen auf die eigenen Bedürfnisse angepasst werden
+-- Definition der angezeigten Telemetrie-Werte in Abh?ngigkeit des aktiven Modells
+-- Der Modellname und die Telemetriewerte m?ssen auf die eigenen Bed?rfnisse angepasst werden
 
 function widget()
 	local switchPos = getValue("sg")
@@ -59,10 +59,7 @@ function widget()
 		widgetDefinition = {{"gps","battery1"},{"fm1","dist1","alt","speed"}, {"rssi1", "dist", "timer", "latlon"}}
 	elseif modelName == "RQR-HoneyBadger" or "RQR-Hive      1" or "RQR-Hive      2" then
 		-- Kiss FC
-		widgetDefinition = {{"battery"},{"vfas","curr","fuel"}, {"lost", "armed", "timer"}}
-	elseif modelName == "TEST" or "Mini Ellipse" then
-		-- Unisens E
-		widgetDefinition = {{"fm","timer","rssi"}, {"alt", "vspeed", "rxbat"}}
+		widgetDefinition = {{"rssi1", "battery1"},{"vfas","curr","fuel"}, {"lost", "armed", "timer"}}
 	else
 	--local widgetDefinition = {{"vfas","timer","curr","fuel"},{"fm1","alt","speed"}, {"timer","curr"}}
 
@@ -124,7 +121,7 @@ local function anyFuel()
 	armed = bit32.band(fuel, 1) == 1
 	homeSet = bit32.band(fuel, 2) == 2
 	
-	--Logischer Schalter für Timer Ein/Aus, LS64/INPUT30
+	--Logischer Schalter f?r Timer Ein/Aus, LS64/INPUT30
 	if armed then
 		model.setLogicalSwitch(63,myLS1) 
 	else 
@@ -846,7 +843,7 @@ local function buildGrid(def, thisZone)
 			tempCellHeight = tempCellHeight + math.floor(thisZone.zone.h / # def[i])
 		end
 		
-		-- Werte zurücksetzen
+		-- Werte zur?cksetzen
 		sumY = thisZone.zone.y
 		sumX = sumX + cellWide
 	end
