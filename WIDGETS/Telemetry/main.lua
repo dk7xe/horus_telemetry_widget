@@ -1,15 +1,15 @@
 
 -- ######################################################
 -- ## Script by dk7xe.g                                ##
+-- ## V 1.2, 2017/03/23                                ## 
+-- ##                                                  ##
 -- ## based on Script by johfla                        ##
--- ## V 1.2, 2017/03/23                                ##
+-- ##                                                  ##
 -- ## Dynamic design via initial values and functions  ##
 -- ## Some of the Widgets based on work by Ollicious   ##
 -- ##							                 ##
 -- ######################################################
 
-
-local demoModeOn = 0				-- 1=ON, 0=OFF
 
 local transparency = 1				-- Hintergrund transparent
 local imagePath = "/WIDGETS/Telemetry/images/"  -- Pfad zu den Bildern auf der SD-Card
@@ -139,11 +139,6 @@ local function vfasWidget(xCoord, yCoord, cellHeight, name)
 	local myVoltage = getValueOrDefault("VFAS") 
 	local myMinVoltage = getValueOrDefault("VFAS-")
 			
-	if demoModeOn == 1 then
-      myVoltage = 14.8
-	  myMinVoltage = 12.3
-	end
-	
 	xTxt1 = xCoord + cellWide * xCorr.value; yTxt1 = cellHeight + yCorr.dbl; yTxt2 = cellHeight + yCorr.sml
 	lcd.setColor(CUSTOM_COLOR, col_std)
 		
@@ -159,11 +154,7 @@ end
 local function fuelWidget(xCoord, yCoord, cellHeight, name)
 	local myFuel = getValueOrDefault("Fuel")
 	local myFuelID = getTelemetryId("Fuel")
-	
-	if demoModeOn == 1 then
-      myFuel = 800
-	end
-	
+		
 	xTxt1 = xCoord + cellWide * xCorr.value; yTxt1 = cellHeight + yCorr.dbl; yTxt2 = cellHeight + yCorr.sml
 	
 	if myFuel > lipoCapa * 0.8 then
@@ -184,11 +175,6 @@ local function currWidget(xCoord, yCoord, cellHeight, name)
 	local myCurrent = getValueOrDefault("Curr")
 	local myMaxCurrent = getValueOrDefault("Curr+")
 				
-	if demoModeOn == 1 then
-      myCurrent = 12.7
-	  myMaxCurrent = 35.8
-	end
-	
 	xTxt1 = xCoord + cellWide * xCorr.value; yTxt1 = cellHeight + yCorr.dbl; yTxt2 = cellHeight + yCorr.sml
 	lcd.setColor(CUSTOM_COLOR, col_std)
 		
@@ -204,11 +190,6 @@ end
 local function rxbatWidget(xCoord, yCoord, cellHeight, name)
 	local myRxBat = getValueOrDefault("RxBt")
 	local myMinRxBat = getValueOrDefault("RxBt-")
-				
-	if demoModeOn == 1 then
-      myRxBat = 5.7
-	  myMinRxBat = 4.8
-	end
 	
 	xTxt1 = xCoord + cellWide * xCorr.value; yTxt1 = cellHeight + yCorr.dbl; yTxt2 = cellHeight + yCorr.sml
 	lcd.setColor(CUSTOM_COLOR, col_std)
@@ -226,11 +207,7 @@ local function speedWidget(xCoord, yCoord, cellHeight, name)
 
 	local mySpeed = getValueOrDefault("GSpd") * 1.852 -- Umrechnung von Knoten in kmh
 	local myMaxSpeed = getValueOrDefault("GSpd+") * 1.852 
-	
-	if demoModeOn == 1 then
-      mySpeed = 10.24
-	end
-	
+		
 	xTxt1 = xCoord + cellWide * xCorr.value; yTxt1 = cellHeight + yCorr.dbl; yTxt2 = cellHeight + yCorr.sml
 	lcd.setColor(CUSTOM_COLOR, col_std)
 	
@@ -246,12 +223,7 @@ end
 local function vspeedWidget(xCoord, yCoord, cellHeight, name)
 	local myVSpeed = getValueOrDefault("VSpd")
 	local myMaxVSpeed = getValueOrDefault("VSpd+") 
-	
-	if demoModeOn == 1 then
-      myVSpeed = 12.5
-	  myMaxVSpeed = 33.46
-	end
-	
+		
 	xTxt1 = xCoord + cellWide * xCorr.value; yTxt1 = cellHeight + yCorr.dbl; yTxt2 = cellHeight + yCorr.sml
 	lcd.setColor(CUSTOM_COLOR, col_std)
 	
@@ -267,11 +239,7 @@ end
 local function rpmWidget(xCoord, yCoord, cellHeight, name)
 	local myRpm = getValueOrDefault("RPM")
 	local myMaxRpm = getValueOrDefault("RPM+") 
-	
-	if demoModeOn == 1 then
-      myRpm = 2305.12
-	end
-	
+		
 	xTxt1 = xCoord + cellWide * xCorr.value; yTxt1 = cellHeight + yCorr.dbl; yTxt2 = cellHeight + yCorr.sml
 	lcd.setColor(CUSTOM_COLOR, col_std)
 	
@@ -287,10 +255,6 @@ end
 local function timerWidget(xCoord, yCoord, cellHeight, name)
 	local teleV_tmp = model.getTimer(0) -- Timer 1
 	local myTimer = teleV_tmp.value
-	
-	if demoModeOn == 1 then
-      myTimer = 175
-	end
 	
 	local minute = math.floor(myTimer/60)
 	local sec = myTimer - (minute*60)
@@ -313,11 +277,7 @@ end
 -------------------------------------------------
 local function altWidget(xCoord, yCoord, cellHeight, name)
 	local myAlt = getValueOrDefault("Alt")
-	local myMaxAlt = getValueOrDefault("Alt+") 
-	
-	if demoModeOn == 1 then
-      myAlt = 123
-	end
+	local myMaxAlt = getValueOrDefault("Alt+")
 	
 	xTxt1 = xCoord + cellWide * xCorr.value; yTxt1 = cellHeight + yCorr.dbl; yTxt2 = cellHeight + yCorr.sml
 	lcd.setColor(CUSTOM_COLOR, col_std)
@@ -339,10 +299,6 @@ local function fmWidget(xCoord, yCoord, cellHeight, name)
 		valTxt = FM
 	else --set by AnySense
 		valTxt = modeDesc[fmode]
-	end
-	
-	if demoModeOn == 1 then
-      valTxt = "FlightMode"
 	end
 		
 	if valTxt == "CAL" then		-- Kalibrierungsmodus bei Seglern
@@ -372,10 +328,6 @@ local function armedWidget(xCoord, yCoord, cellHeight, name)
 		lcd.setColor(CUSTOM_COLOR, col_alm)	
 	end
 	
-	if demoModeOn == 1 then
-      valTxt = "Armed"
-	end
-	
 	xTxt1 = xCoord + cellWide*0.5 - (xCorr.center * string.len(valTxt)); yTxt1 = cellHeight + yCorr.mid
 		
 	lcd.drawText(xCoord + 4, yCoord + 2, "Motor", modeSize.sml) 
@@ -394,11 +346,7 @@ local function lostWidget(xCoord, yCoord, cellHeight, name)
 		valTxt = "Beep SOS" 
 		lcd.setColor(CUSTOM_COLOR, col_alm)	
 	end
-	
-	if demoModeOn == 1 then
-      valTxt = "Beep SOS"
-	end
-	
+		
 	xTxt1 = xCoord + cellWide*0.5 - (xCorr.center * string.len(valTxt)); yTxt1 = cellHeight + yCorr.mid
 		
 	lcd.drawText(xCoord + 4, yCoord + 2, "LostSnd [SD]", modeSize.sml) 
@@ -413,10 +361,6 @@ local function distWidget(xCoord,yCoord, cellHeight, name)
 	local myDistance = getValueOrDefault("Dist")
 	local myMaxDistance = getValueOrDefault("Dist+") 
 	--local myDistance = getValueOrDefault (212)
-	
-	if demoModeOn == 1 then
-      myDistance = 250
-	end
 	
 	xTxt1 = xCoord + cellWide * xCorr.value; yTxt1 = cellHeight + yCorr.dbl; yTxt2 = cellHeight + yCorr.sml
 	lcd.setColor(CUSTOM_COLOR, col_std)
@@ -555,13 +499,6 @@ local function batteryWidget(xCoord, yCoord, cellHeight, name)
 			myPercent = math.floor((myVoltage-threeLow) * (100/(threeHigh-threeLow)))
 		end
 	end
-
-	if demoModeOn == 1 then
-      myPercent = 80
-	  battCell = "3S"
-	  lipoCapa = 1300
-	  myVoltage = 14.85
-	end
 	
 	lcd.drawText(xCoord + 4, yCoord + 2, "Lipo", modeSize.sml)
 		
@@ -610,12 +547,6 @@ end
 ------------------------------------------------- 
 local function gpsWidget(xCoord, yCoord, cellHeight, name)
 	local modeFix = {[0]="Kein Fix", [2]="2D", [3]="3D", [4]="DGPS"}
-			
-	if demoModeOn == 1 then
-      sats = 4
-	  satfix = 3
-	  homeSet = 2
-	end
 	
 	lcd.drawText(xCoord + 4, yCoord + 2, "GPS", modeSize.sml)
 		
@@ -668,10 +599,6 @@ end
 local function headingWidget(xCoord, yCoord, cellHeight, name)
 	local hdgArray = {" N ", "NNO", "NO", "ONO", " O ", "OSO", "SO", "SSO", " S ", "SSW", "SW", "WSW", " W ", "WNW", " NW ", "NNW", " N "}
 	local myHeading = getValueOrDefault("Hdg") 
-		
-	if demoModeOn == 1 then
-      myHeading = 35
-	end
 	
 	hdgIndex = math.floor (myHeading/15+0.5) --+1
 	
@@ -705,12 +632,7 @@ end
 local function rssiWidget(xCoord, yCoord, cellHeight, name)
 
 	local myRssi = getValueOrDefault("RSSI")
-	local myMinRssi = getValueOrDefault("RSSI-") 
-		
-	if demoModeOn == 1 then
-      myRssi = 75
-	  myMinRssi = 41
-	end
+	local myMinRssi = getValueOrDefault("RSSI-")
 	
 	lcd.drawText(xCoord + 4, yCoord + 2, "RSSI", modeSize.sml)
 	
