@@ -6,3 +6,5 @@ Example for KISS FC
 
 widgetDefinition = {{"rssi1", "battery1"},{"vfas","curr","fuel"}, {"lost", "armed", "timer"}}
 defines the following widget:
+![](https://github.com/dk7xe/horus_telemetry_widget/blob/master/development/telemetry_widget_kiss.JPG)
+
