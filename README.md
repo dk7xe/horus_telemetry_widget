@@ -5,6 +5,7 @@ http://fpv-community.de/showthread.php?47985-LUA-scripts-zum-testen&p=989044&vie
 To use it u need to copy the content of the WIDGET directory to the SD card folder of your Horus and adjust the widget definition according your model names and needs.
 
 To make it finally working with your adjusted settings OpenTX needs to be installed with the "luac" (LUA compile) besides the "lua" option.
+
 ![](https://github.com/dk7xe/horus_telemetry_widget/blob/master/development/luac_option.JPG)
 
 Example widget definition for KISS FC
